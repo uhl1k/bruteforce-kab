@@ -17,7 +17,7 @@ def shift_cipher(cipher):
         for i in range(0, len(alphabet)):
             result = ""
             for letter in list(cipher):
-                result += alphabet[(alphabet.index(letter) + i) % len(alphabet)]
+                result += alphabet[(alphabet.index(letter) - i) % len(alphabet)]
             print("[" + str((len(alphabet) - i) % len(alphabet)) + "]: " + result)
     except:
         print("Problem occurred when bruteforcing. Make sure cipher contains only letter from english alphabet.")
@@ -36,7 +36,7 @@ print("under the conditions of GNU General Public License version 3.0")
 print("")
 
 #  Ask for a cipher to decipher
-cipher = input("Enter a cipher to bruteforce: ")
+cipher = input("Enter a cipher to bruteforce: ").lower()
 
 #  Print all available options
 for option in options:

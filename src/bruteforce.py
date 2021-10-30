@@ -1,18 +1,26 @@
 #  Ciphers that the program can decipher
 options = [
-    "Shift cipher"
+    "Shift cipher",
+    "Monoalphabetic substitution with shift",
+    "Monoalphabetic substitution with keyword",
+    "Vigenér cipher",
+    "Complete table",
+    "Complete table with keyword",
+    "Double complete table"
 ]
 
 
 #  Method for deciphering the simple shift cipher
 def shift_cipher(cipher):
-    alphabet = list("abcdefghijklmnopqrstuvwxyz")
-    for i in range(0, len(alphabet)):
-        result = ""
-        for letter in list(cipher):
-            result += alphabet[(alphabet.index(letter) + i) % len(alphabet)]
-        print("[" + str((len(alphabet) - i) % len(alphabet)) + "]: " + result)
-    return
+    try:
+        alphabet = list("abcdefghijklmnopqrstuvwxyz")
+        for i in range(0, len(alphabet)):
+            result = ""
+            for letter in list(cipher):
+                result += alphabet[(alphabet.index(letter) + i) % len(alphabet)]
+            print("[" + str((len(alphabet) - i) % len(alphabet)) + "]: " + result)
+    except:
+        print("Problem occurred when bruteforcing. Make sure cipher contains only letter from english alphabet.")
 
 
 #  -------------------------------  #

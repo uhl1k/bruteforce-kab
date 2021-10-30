@@ -1,7 +1,7 @@
 #  Ciphers that the program can decipher
 options = [
     "Shift cipher",
-    "Monoalphabetic substitution with shift",
+    "Affine cipher",
     "Monoalphabetic substitution with keyword",
     "Vigenér cipher",
     "Complete table",
@@ -9,11 +9,13 @@ options = [
     "Double complete table"
 ]
 
+alphabet = list("abcdefghijklmnopqrstuvwxyz")
+
 
 #  Method for deciphering the simple shift cipher
 def shift_cipher(cipher):
     try:
-        alphabet = list("abcdefghijklmnopqrstuvwxyz")
+        #  Just cycle over all available shifts
         for i in range(0, len(alphabet)):
             result = ""
             for letter in list(cipher):
@@ -21,6 +23,28 @@ def shift_cipher(cipher):
             print("[" + str((len(alphabet) - i) % len(alphabet)) + "]: " + result)
     except:
         print("Problem occurred when bruteforcing. Make sure cipher contains only letter from english alphabet.")
+
+
+#  Method for deciphering
+def monoalphabetic_cipher(cipher):
+    try:
+        #  Loop over all possible combinations of A and B
+        for a in range(1, len(alphabet)):
+            for b in range(len(alphabet)):
+                #  Find the modulus multiplicative inverse
+                a1 = 0
+                for i in range(1, len(alphabet)):
+                    if (i*a) % len(alphabet) == 1:
+                        a1 = i
+                        break
+                #  Decipher the tex with given A and B
+                result = ""
+                for letter in list(cipher):
+                    result += alphabet[(a1 * (alphabet.index(letter) - b)) % len(alphabet)]
+                print("[a=" + str(a) + ";b=" + str(b) + "]: " + result)
+    except Exception as ex:
+        print("Problem occurred when bruteforcing. Make sure cipher contains only letter from english alphabet.")
+        print(ex)
 
 
 #  -------------------------------  #
@@ -58,6 +82,12 @@ while True:
         print(options[0] + ":")
         print("")
         shift_cipher(cipher)
+        break
+
+    elif selected == 1:
+        print(options[1] + ":")
+        print("")
+        monoalphabetic_cipher(cipher)
         break
 
     #  user entered  number out of range

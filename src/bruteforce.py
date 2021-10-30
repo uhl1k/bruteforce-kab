@@ -1,11 +1,15 @@
 options = [
-    "Shift cipher",
-    "Monoalphabetic substitution cipher",
-    "Complete table",
-    "Double complete table"
+    "Shift cipher"
 ]
 
-def shift_cipher():
+
+def shift_cipher(cipher):
+    alphabet = list("abcdefghijklmnopqrstuvwxyz")
+    for i in range(0, len(alphabet)):
+        result = ""
+        for letter in list(cipher):
+            result += alphabet[(alphabet.index(letter) + i) % len(alphabet)]
+        print("[" + str((len(alphabet) - i) % len(alphabet)) + "]: " + result)
     return
 
 
@@ -32,18 +36,8 @@ while True:
 
     if selected == 0:
         print(options[0] + ":")
-        break
-
-    elif selected == 1:
-        print(options[1] + ":")
-        break
-
-    elif selected == 2:
-        print(options[2] + ":")
-        break;
-
-    elif selected == 3:
-        print(options[3] + ":")
+        print("")
+        shift_cipher(cipher)
         break
 
     else:

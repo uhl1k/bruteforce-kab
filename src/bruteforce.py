@@ -3,6 +3,7 @@ options = [
     "Shift cipher"
 ]
 
+
 #  Method for deciphering the simple shift cipher
 def shift_cipher(cipher):
     alphabet = list("abcdefghijklmnopqrstuvwxyz")

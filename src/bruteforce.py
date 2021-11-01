@@ -1,3 +1,6 @@
+import itertools
+
+
 #  Ciphers that the program can decipher
 options = [
     "Shift cipher",
@@ -34,7 +37,7 @@ def monoalphabetic_cipher(cipher):
                 #  Find the modulus multiplicative inverse
                 a1 = 0
                 for i in range(1, len(alphabet)):
-                    if (i*a) % len(alphabet) == 1:
+                    if (i * a) % len(alphabet) == 1:
                         a1 = i
                         break
                 #  Decipher the tex with given A and B
@@ -45,6 +48,29 @@ def monoalphabetic_cipher(cipher):
     except Exception as ex:
         print("Problem occurred when bruteforcing. Make sure cipher contains only letter from english alphabet.")
         print(ex)
+
+
+#  Method for monoalphabetic cipher with keyword
+def monoalphabetic_with_keyword(cipher):
+    length = 10
+    try:
+        length = int(input("Enter a maximum length of keyword (default is 10): "))
+    except:
+        length = 10
+
+    for i in range(1, length):
+        for key in itertools.product(alphabet, repeat=i):
+            decipher = ""
+            for letter in key:
+                if letter not in decipher:
+                    decipher += letter
+            for letter in alphabet:
+                if letter not in decipher:
+                    decipher += letter
+            result = ""
+            for letter in cipher:
+                result += alphabet[decipher.index(letter)]
+            print("[key=" + "".join(map(str, key)) + "]: " + result)
 
 
 #  -------------------------------  #
@@ -88,6 +114,12 @@ while True:
         print(options[1] + ":")
         print("")
         monoalphabetic_cipher(cipher)
+        break
+
+    elif selected == 2:
+        print(options[2] + ":")
+        print("")
+        monoalphabetic_with_keyword(cipher)
         break
 
     #  user entered  number out of range

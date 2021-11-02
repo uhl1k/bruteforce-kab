@@ -1,10 +1,9 @@
 import itertools
 import logging
+from multiprocessing.pool import ThreadPool as Pool
 
 
 #  Ciphers that the program can decipher
-import sys
-
 options = [
     "Shift cipher",
     "Affine cipher",
@@ -16,6 +15,8 @@ options = [
 ]
 
 alphabet = list("abcdefghijklmnopqrstuvwxyz")
+
+cipher = ""
 
 
 #  Method for deciphering the simple shift cipher
@@ -54,26 +55,19 @@ def monoalphabetic_cipher(cipher):
 
 
 #  Method for monoalphabetic cipher with keyword
-def monoalphabetic_with_keyword(cipher):
-    length = 10
-    try:
-        length = int(input("Enter a maximum length of keyword (default is 10): "))
-    except:
-        length = 10
-
-    for i in range(1, length):
-        for key in itertools.product(alphabet, repeat=i):
-            decipher = ""
-            for letter in key:
-                if letter not in decipher:
-                    decipher += letter
-            for letter in alphabet:
-                if letter not in decipher:
-                    decipher += letter
-            result = ""
-            for letter in cipher:
-                result += alphabet[decipher.index(letter)]
-            logging.info("[key=%s]: %s", "".join(map(str, key)), result)
+def monoalphabetic_with_keyword(keylen):
+    for key in itertools.product(alphabet, repeat=keylen):
+        decipher = ""
+        for letter in key:
+            if letter not in decipher:
+                decipher += letter
+        for letter in alphabet:
+            if letter not in decipher:
+                decipher += letter
+        result = ""
+        for letter in cipher:
+            result += alphabet[decipher.index(letter)]
+        logging.info("[key=%s]: %s", "".join(map(str, key)), result)
 
 
 #  -------------------------------  #
@@ -126,9 +120,12 @@ while True:
         break
 
     elif selected == 2:
+        keylen = int(input("Enter the maximum key length: "))
+        keymin = int(input("Enter the minimum key length: "))
         print(options[2] + ":")
         print("")
-        monoalphabetic_with_keyword(cipher)
+        with Pool(keylen - keymin + 1) as p:
+            p.map(monoalphabetic_with_keyword, range(keymin, keylen+1))
         break
 
     #  user entered  number out of range

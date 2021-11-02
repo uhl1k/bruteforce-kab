@@ -1,7 +1,10 @@
 import itertools
+import logging
 
 
 #  Ciphers that the program can decipher
+import sys
+
 options = [
     "Shift cipher",
     "Affine cipher",
@@ -70,12 +73,18 @@ def monoalphabetic_with_keyword(cipher):
             result = ""
             for letter in cipher:
                 result += alphabet[decipher.index(letter)]
-            print("[key=" + "".join(map(str, key)) + "]: " + result)
+            logging.info("[key=%s]: %s", "".join(map(str, key)), result)
 
 
 #  -------------------------------  #
 #  The main section of the program  #
 #  -------------------------------  #
+
+root_logger = logging.getLogger()
+root_logger.setLevel(logging.DEBUG)
+handler = logging.FileHandler('out.log', 'w', 'utf-8')
+handler.setFormatter(logging.Formatter('%(name)s %(message)s'))
+root_logger.addHandler(handler)
 
 #  Print licensing information
 print("")

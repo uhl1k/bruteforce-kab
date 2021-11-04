@@ -1,3 +1,6 @@
+from langdetect import detect
+
+
 #  Ciphers that the program can decipher
 options = [
     "Shift cipher",
@@ -9,7 +12,11 @@ options = [
     "Double complete table"
 ]
 
+#  Alphabetic with which the program works
 alphabet = list("abcdefghijklmnopqrstuvwxyz")
+
+#  Language that program should detect
+lang = 'en'
 
 
 #  Method for deciphering the simple shift cipher
@@ -83,18 +90,26 @@ while True:
         continue
 
     #  User selected a valid option
+    solutions = list()
     if selected == 0:
-        print(options[0] + ":")
-        print("")
-        print(shift_cipher(cipher))
-        break
+        solutions = shift_cipher(cipher)
 
     elif selected == 1:
-        print(options[1] + ":")
-        print("")
-        print(monoalphabetic_cipher(cipher))
-        break
+        solutions = monoalphabetic_cipher(cipher)
 
     #  user entered  number out of range
     else:
         print("Number is out of available range of 0 to " + str(len(options) - 1) + ".")
+
+    #  Print all solutions that might be english
+    print()
+    for solution in solutions:
+        if detect(solution[1]) == lang:
+            print(solution)
+
+    #  Does user want all solutions?
+    print()
+    if input("Do you want to print all solutions? [y/n]: ").lower() == 'y':
+        print(solutions)
+
+    break

@@ -35,7 +35,7 @@ def shift_cipher(cipher):
         print(e)
 
 
-#  Method for deciphering
+#  Method for deciphering affine cipher
 def monoalphabetic_cipher(cipher):
     try:
         solutions = list()
@@ -56,6 +56,31 @@ def monoalphabetic_cipher(cipher):
         return solutions
     except Exception as e:
         print("Problem occurred when bruteforcing. Make sure cipher contains only letter from english alphabet.")
+        print(e)
+
+
+#  Method for deciphering monoalphabetic substitution with key
+
+
+#  Method for deciphering Vigenérs cipher
+
+#  Method for decipher complete table
+def complete_table(cipher):
+    try:
+        solutions = list()
+        heights = list()
+        for i in range(1, len(cipher) + 1):
+            if (len(cipher) % i) == 0:
+                heights.append(i)
+        for height in heights:
+            decipher = ''
+            width = int(len(cipher) / height)
+            for col in range(0, width):
+                for line in range(0, height):
+                    decipher += cipher[line*width + col]
+            solutions.append((str(height) + 'x' + str(width), decipher))
+        return solutions
+    except Exception as e:
         print(e)
 
 
@@ -97,15 +122,21 @@ while True:
     elif selected == 1:
         solutions = monoalphabetic_cipher(cipher)
 
+    elif selected == 4:
+        solutions = complete_table(cipher)
+
     #  user entered  number out of range
     else:
         print("Number is out of available range of 0 to " + str(len(options) - 1) + ".")
 
     #  Print all solutions that might be english
     print()
-    for solution in solutions:
-        if detect(solution[1]) == lang:
-            print(solution)
+    try:
+        for solution in solutions:
+            if detect(solution[1]) == lang:
+                print(solution)
+    except Exception as e:
+        print(e)
 
     #  Does user want all solutions?
     print()

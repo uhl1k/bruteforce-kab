@@ -15,19 +15,23 @@ alphabet = list("abcdefghijklmnopqrstuvwxyz")
 #  Method for deciphering the simple shift cipher
 def shift_cipher(cipher):
     try:
+        solutions = list()
         #  Just cycle over all available shifts
         for i in range(0, len(alphabet)):
-            result = ""
+            decipher = ""
             for letter in list(cipher):
-                result += alphabet[(alphabet.index(letter) - i) % len(alphabet)]
-            print("[" + str((len(alphabet) - i) % len(alphabet)) + "]: " + result)
-    except:
+                decipher += alphabet[(alphabet.index(letter) - i) % len(alphabet)]
+            solutions.append(("shift=" + str((len(alphabet) - i) % len(alphabet)), decipher))
+        return solutions
+    except Exception as e:
         print("Problem occurred when bruteforcing. Make sure cipher contains only letter from english alphabet.")
+        print(e)
 
 
 #  Method for deciphering
 def monoalphabetic_cipher(cipher):
     try:
+        solutions = list()
         #  Loop over all possible combinations of A and B
         for a in range(1, len(alphabet)):
             for b in range(len(alphabet)):
@@ -38,13 +42,14 @@ def monoalphabetic_cipher(cipher):
                         a1 = i
                         break
                 #  Decipher the tex with given A and B
-                result = ""
+                decipher = ""
                 for letter in list(cipher):
-                    result += alphabet[(a1 * (alphabet.index(letter) - b)) % len(alphabet)]
-                print("[a=" + str(a) + ";b=" + str(b) + "]: " + result)
-    except Exception as ex:
+                    decipher += alphabet[(a1 * (alphabet.index(letter) - b)) % len(alphabet)]
+                solutions.append(("a=" + str(a) + ", b=" + str(b), decipher))
+        return solutions
+    except Exception as e:
         print("Problem occurred when bruteforcing. Make sure cipher contains only letter from english alphabet.")
-        print(ex)
+        print(e)
 
 
 #  -------------------------------  #
@@ -81,13 +86,13 @@ while True:
     if selected == 0:
         print(options[0] + ":")
         print("")
-        shift_cipher(cipher)
+        print(shift_cipher(cipher))
         break
 
     elif selected == 1:
         print(options[1] + ":")
         print("")
-        monoalphabetic_cipher(cipher)
+        print(monoalphabetic_cipher(cipher))
         break
 
     #  user entered  number out of range

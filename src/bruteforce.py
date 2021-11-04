@@ -15,14 +15,17 @@ alphabet = list("abcdefghijklmnopqrstuvwxyz")
 #  Method for deciphering the simple shift cipher
 def shift_cipher(cipher):
     try:
+        solutions = list()
         #  Just cycle over all available shifts
         for i in range(0, len(alphabet)):
-            result = ""
+            decipher = ""
             for letter in list(cipher):
-                result += alphabet[(alphabet.index(letter) - i) % len(alphabet)]
-            print("[" + str((len(alphabet) - i) % len(alphabet)) + "]: " + result)
-    except:
+                decipher += alphabet[(alphabet.index(letter) - i) % len(alphabet)]
+            solutions.append(("shift=" + str((len(alphabet) - i) % len(alphabet)), decipher))
+        return solutions
+    except Exception as e:
         print("Problem occurred when bruteforcing. Make sure cipher contains only letter from english alphabet.")
+        print(e)
 
 
 #  Method for deciphering
@@ -81,7 +84,7 @@ while True:
     if selected == 0:
         print(options[0] + ":")
         print("")
-        shift_cipher(cipher)
+        print(shift_cipher(cipher))
         break
 
     elif selected == 1:

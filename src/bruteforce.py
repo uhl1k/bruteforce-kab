@@ -31,6 +31,7 @@ def shift_cipher(cipher):
 #  Method for deciphering
 def monoalphabetic_cipher(cipher):
     try:
+        solutions = list()
         #  Loop over all possible combinations of A and B
         for a in range(1, len(alphabet)):
             for b in range(len(alphabet)):
@@ -41,13 +42,14 @@ def monoalphabetic_cipher(cipher):
                         a1 = i
                         break
                 #  Decipher the tex with given A and B
-                result = ""
+                decipher = ""
                 for letter in list(cipher):
-                    result += alphabet[(a1 * (alphabet.index(letter) - b)) % len(alphabet)]
-                print("[a=" + str(a) + ";b=" + str(b) + "]: " + result)
-    except Exception as ex:
+                    decipher += alphabet[(a1 * (alphabet.index(letter) - b)) % len(alphabet)]
+                solutions.append(("a=" + str(a) + ", b=" + str(b), decipher))
+        return solutions
+    except Exception as e:
         print("Problem occurred when bruteforcing. Make sure cipher contains only letter from english alphabet.")
-        print(ex)
+        print(e)
 
 
 #  -------------------------------  #
@@ -90,7 +92,7 @@ while True:
     elif selected == 1:
         print(options[1] + ":")
         print("")
-        monoalphabetic_cipher(cipher)
+        print(monoalphabetic_cipher(cipher))
         break
 
     #  user entered  number out of range

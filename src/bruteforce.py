@@ -12,7 +12,11 @@ options = [
     "Double complete table"
 ]
 
+#  Alphabetic with which the program works
 alphabet = list("abcdefghijklmnopqrstuvwxyz")
+
+#  Language that program should detect
+lang = 'en'
 
 
 #  Method for deciphering the simple shift cipher
@@ -100,7 +104,7 @@ while True:
     #  Print all solutions that might be english
     print()
     for solution in solutions:
-        if detect(solution[1]) == 'en':
+        if detect(solution[1]) == lang:
             print(solution)
 
     #  Does user want all solutions?

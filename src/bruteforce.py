@@ -1,5 +1,7 @@
+import itertools
+from multiprocessing import Pool
+import sys
 from langdetect import detect
-
 
 #  Ciphers that the program can decipher
 options = [
@@ -36,7 +38,7 @@ def shift_cipher(cipher):
 
 
 #  Method for deciphering affine cipher
-def monoalphabetic_cipher(cipher):
+def affine_cipher(cipher):
     try:
         solutions = list()
         #  Loop over all possible combinations of A and B
@@ -45,7 +47,7 @@ def monoalphabetic_cipher(cipher):
                 #  Find the modulus multiplicative inverse
                 a1 = 0
                 for i in range(1, len(alphabet)):
-                    if (i*a) % len(alphabet) == 1:
+                    if (i * a) % len(alphabet) == 1:
                         a1 = i
                         break
                 #  Decipher the tex with given A and B
@@ -77,8 +79,47 @@ def complete_table(cipher):
             width = int(len(cipher) / height)
             for col in range(0, width):
                 for line in range(0, height):
-                    decipher += cipher[line*width + col]
+                    decipher += cipher[line * width + col]
             solutions.append((str(height) + 'x' + str(width), decipher))
+        return solutions
+    except Exception as e:
+        print(e)
+
+
+def complete_table_with_key(cipher):
+    try:
+        solutions = list()
+        heights = list()
+        for i in range(1, len(cipher) + 1):
+            if (len(cipher) % i) == 0:
+                heights.append(i)
+        p = Pool(len(heights))
+        solutions.extend(p.starmap(resolve_table_for_height, zip(heights, itertools.repeat(cipher))))
+        return solutions
+    except Exception as e:
+        print(e.with_traceback())
+
+
+def resolve_table_for_height(height, cipher):
+    solutions = list()
+    width = int(len(cipher) / height)
+    print("Permuting " + str(height) + 'x' + str(width))
+    for perm in itertools.permutations(range(0, height)):
+        decipher = ''
+        for col in range(0, width):
+            for line in perm:
+                decipher += cipher[line * width + col]
+        solutions.append((str(height) + 'x' + str(width) + '; ' + str(perm), decipher))
+    return solutions
+
+
+def double_complete_table(cipher):
+    try:
+        solutions = list()
+        for partial in complete_table(cipher):
+            twice = complete_table(partial[1])
+            for item in twice:
+                solutions.append((str(item[0]) + '; ' + str(partial[0]), item[1]))
         return solutions
     except Exception as e:
         print(e)
@@ -88,59 +129,73 @@ def complete_table(cipher):
 #  The main section of the program  #
 #  -------------------------------  #
 
-#  Print licensing information
-print("")
-print("Bruteforce KAB  Copyright (C) 2021  uhl1k (Roman Janků)")
-print("This program comes with ABSOLUTELY NO WARRANTY.")
-print("This is free software, and you are welcome to redistribute it")
-print("under the conditions of GNU General Public License version 3.0")
-print("")
+def main(argv):
+    #  Print licensing information
+    print("")
+    print("Bruteforce KAB  Copyright (C) 2021  uhl1k (Roman Janků)")
+    print("This program comes with ABSOLUTELY NO WARRANTY.")
+    print("This is free software, and you are welcome to redistribute it")
+    print("under the conditions of GNU General Public License version 3.0")
+    print("")
 
-#  Ask for a cipher to decipher
-cipher = input("Enter a cipher to bruteforce: ").lower()
+    #  Ask for a cipher to decipher
+    cipher = input("Enter a cipher to bruteforce: ").lower()
 
-#  Print all available options
-for option in options:
-    print("[" + str(options.index(option)) + "] " + option)
+    #  Print all available options
+    for option in options:
+        print("[" + str(options.index(option)) + "] " + option)
 
-print("")
+    print("")
 
-while True:
-    #  Ask user to select option
-    try:
-        selected = int(input("Select a cipher to bruteforce: "))
-    #  User did not enter number
-    except:
-        print("Use number to select a cipher to bruteforce.")
-        continue
+    while True:
+        #  Ask user to select option
+        try:
+            selected = int(input("Select a cipher to bruteforce: "))
+        #  User did not enter number
+        except:
+            print("Use number to select a cipher to bruteforce.")
+            continue
 
-    #  User selected a valid option
-    solutions = list()
-    if selected == 0:
-        solutions = shift_cipher(cipher)
+        #  User selected a valid option
+        solutions = list()
+        if selected == 0:
+            solutions = shift_cipher(cipher)
 
-    elif selected == 1:
-        solutions = monoalphabetic_cipher(cipher)
+        elif selected == 1:
+            solutions = affine_cipher(cipher)
 
-    elif selected == 4:
-        solutions = complete_table(cipher)
+        elif selected == 4:
+            solutions = complete_table(cipher)
 
-    #  user entered  number out of range
-    else:
-        print("Number is out of available range of 0 to " + str(len(options) - 1) + ".")
+        elif selected == 5:
+            solutions = complete_table_with_key(cipher)
 
-    #  Print all solutions that might be english
-    print()
-    try:
-        for solution in solutions:
-            if detect(solution[1]) == lang:
+        elif selected == 6:
+            solutions = double_complete_table(cipher)
+
+        #  user entered  number out of range
+        else:
+            print("Number is out of available range of 0 to " + str(len(options) - 1) + ".")
+
+        #  Print all solutions that might be english
+        print()
+        printed = 0
+        try:
+            for solution in solutions:
+                if detect(solution[1]) == lang:
+                    print(solution)
+                    printed += 1
+        except Exception as e:
+            print(e)
+
+        #  Does user want all solutions?
+        print()
+        print("Printed " + str(printed) + " suspicious solutions out of " + str(len(solutions)) + " total solutions.")
+        if input("Do you want to print all solutions? [y/n]: ").lower() == 'y':
+            for solution in solutions:
                 print(solution)
-    except Exception as e:
-        print(e)
+        break
 
-    #  Does user want all solutions?
-    print()
-    if input("Do you want to print all solutions? [y/n]: ").lower() == 'y':
-        print(solutions)
 
-    break
+if __name__ == '__main__':
+    main(sys.argv)
